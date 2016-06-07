@@ -5,6 +5,33 @@
     <title>Restaruant Tracker</title>
 </head>
 <body>
-Hello!
+<form action="/logout" method="post">
+    <button type="submit">Logout</button>
+</form>
+<br>
+<form action="/create-restaurant" method="post">
+    <input type="text" name="name" placeholder="Name"/>
+    <input type="text" name="location" placeholder="Location"/>
+    <select name="rating">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+    </select>
+    <input type="text" name="comment" placeholder="Comment"/>
+    <button type="submit">Submit Restaurant</button>
+</form>
+<br>
+<form action="/delete-restaurant" method="post">
+    <input type="number" name="id" placeholder="#"/>
+    <button type="submit">Delete Restaurant</button>
+</form>
+<br>
+<ol>
+    {{#restaurants}}
+    <li><b>{{name}}</b> - {{location}} - {{rating}}/5 - {{comment}}</li>
+    {{/restaurants}}
+</ol>
 </body>
 </html>
