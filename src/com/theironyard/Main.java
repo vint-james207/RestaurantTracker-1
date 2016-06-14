@@ -44,6 +44,31 @@ public class Main {
         }
         return res;
     }
+    public static Restaurant selectRstnt(Connection conn, int id) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM rstnts WHERE id = ?");
+        stmt.setInt(1, id);
+        ResultSet results = stmt.executeQuery();
+
+        if (results.next()) {
+            String name = results.getString("name");
+            String location = results.getString("location");
+            int rating = results.getInt("rating");
+            String comment = results.getNString("comment");
+            Restaurant restaurant = new Restaurant(id, name, location, rating, comment);
+            return restaurant;
+        }
+        return null;
+    }
+
+    public  static void updateRstnts(Connection conn, int id, String name, String location, int rating, String comment) throws SQLException {
+        PreparedStatement stmt = conn.prepareStatement("UPDATE rstnts SET name = ?, location = ?, rating = ?, comment = ? WHERE id = ?");
+        stmt.setString(1, name);
+        stmt.setString(2, location);
+        stmt.setInt(3, rating);
+        stmt.setString(4, comment);
+        stmt.setInt(5, id);
+        stmt.execute();
+    }
 
     static HashMap<String, User> users = new HashMap<>();
 
@@ -155,6 +180,39 @@ public class Main {
 //                    }
 //                    user.restaurants.remove(id - 1);
 
+                    response.redirect("/");
+                    return "";
+                }
+        );
+
+        Spark.get(
+                "/edit-restaurant",
+                (request, response) -> {
+                    Session session = request.session();
+                    String name = session.attribute("username");
+                    User user = users.get(name);
+                    HashMap map = new HashMap();
+                    int index = (Integer.valueOf(request.queryParams("id")));
+                    Restaurant r = selectRstnt(conn, index);
+                    map.put("restaurant", r);
+                    return new ModelAndView(map, "edit.html");
+                },
+                new MustacheTemplateEngine()
+        );
+
+        Spark.post(
+                "/edit-restaurant",
+                (request, response) -> {
+                    Session session = request.session();
+                    String name = session.attribute("username");
+                    User user = users.get(name);
+
+                    int id = (Integer.valueOf(request.queryParams("id")));
+                    String n = (String.valueOf(request.queryParams("name")));
+                    String lctn = (String.valueOf(request.queryParams("location")));
+                    int rtg = (Integer.valueOf(request.queryParams("rating")));
+                    String cmnt = (String.valueOf(request.queryParams("comment")));
+                    updateRstnts(conn, id, n, lctn, rtg, cmnt);
                     response.redirect("/");
                     return "";
                 }
