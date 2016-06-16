@@ -13,6 +13,8 @@ import java.util.HashMap;
 
 public class Main {
 
+    //this is a comment
+
     public static void insertRstnts(Connection conn, String name, String location, Integer rating, String comment) throws SQLException {
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO rstnts VALUES(NULL, ?, ?, ?, ?)");
         stmt.setString(1, name);
